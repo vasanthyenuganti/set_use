@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:set_use/providers/counter_provider.dart';
+import 'package:set_use/providers/slider_provider.dart';
 
 void main() {
   runApp(MyCore());
@@ -15,6 +16,7 @@ class MyCore extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CounterProvider()),
+        ChangeNotifierProvider(create: (context) => SliderProvider()),
       ],
       child: MyApp(),
     );
@@ -38,11 +40,33 @@ class MyCounter extends StatelessWidget {
     debugPrint("build is called ");
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Consumer<CounterProvider>(
-          builder: (context, value, child) =>
-              Text("${value.count}", style: TextStyle(fontSize: 32)),
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Consumer<CounterProvider>(
+              builder: (context, value, child) =>
+                  Text("${value.count}", style: TextStyle(fontSize: 32)),
+            ),
+          ),
+          Consumer<SliderProvider>(
+            builder: (context, value, child) => Column(
+              children: [
+                Slider(
+                  value: value.sliderValue,
+                  min: 1,
+                  max: 1000,
+                  onChanged: value.onSlideChange,
+                ),
+                Text(
+                  value.sliderValue.toStringAsFixed(2),
+                  style: TextStyle(fontSize: 32),
+                ),
+                
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
