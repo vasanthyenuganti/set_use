@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:set_use/providers/counter_provider.dart';
 import 'package:set_use/providers/slider_provider.dart';
+import 'package:set_use/providers/theme_provider.dart';
 
 void main() {
   runApp(MyCore());
@@ -17,6 +17,7 @@ class MyCore extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CounterProvider()),
         ChangeNotifierProvider(create: (context) => SliderProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: MyApp(),
     );
@@ -28,7 +29,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MyCounter());
+    return Consumer<ThemeProvider>(
+      builder: (context, value, child) => MaterialApp(
+        title: "Providers",
+        home: MyCounter(),
+        themeMode: value.theme,
+        theme: ThemeData(brightness: Brightness.light),
+        darkTheme: ThemeData(brightness: Brightness.dark),
+        themeAnimationCurve: Curves.easeInOutCubic,
+      ),
+    );
   }
 }
 
@@ -49,6 +59,7 @@ class MyCounter extends StatelessWidget {
                   Text("${value.count}", style: TextStyle(fontSize: 32)),
             ),
           ),
+
           Consumer<SliderProvider>(
             builder: (context, value, child) => Column(
               children: [
@@ -62,8 +73,16 @@ class MyCounter extends StatelessWidget {
                   value.sliderValue.toStringAsFixed(2),
                   style: TextStyle(fontSize: 32),
                 ),
-                
               ],
+            ),
+          ),
+          Consumer<ThemeProvider>(
+            builder: (context, value, child) => SwitchListTile(
+              title: Text("Dark Mode"),
+              value: value.theme == ThemeMode.dark,
+              onChanged: (val) {
+                value.themeOnChange(val);
+              },
             ),
           ),
         ],
