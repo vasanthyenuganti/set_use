@@ -32,11 +32,42 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, value, child) => MaterialApp(
         title: "Providers",
-        home: MyCounter(),
+        initialRoute: "/",
+        routes: {
+          "/": (context) => MyHome(),
+          "/counter": (context) => MyCounter(),
+        },
         themeMode: value.theme,
         theme: ThemeData(brightness: Brightness.light),
         darkTheme: ThemeData(brightness: Brightness.dark),
         themeAnimationCurve: Curves.easeInOutCubic,
+      ),
+    );
+  }
+}
+
+class MyHome extends StatefulWidget {
+  const MyHome({super.key});
+
+  @override
+  State<MyHome> createState() => _MyHomeState();
+}
+
+class _MyHomeState extends State<MyHome> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/counter");
+            },
+            child: Text("Counter"),
+          ),
+        ],
       ),
     );
   }
